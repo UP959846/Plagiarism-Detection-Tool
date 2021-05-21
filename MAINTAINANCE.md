@@ -39,7 +39,7 @@ First make a .css file with appropriate name matching format
 of those under "css_source" directory, then change the HTML
 template to include this file. The template, however,
 already includes the "global" styling file "non_specific_page_styling.css"
-with many useful styles to match the applications appearance. It 
+with many useful styles to match the application's appearance.
 
 4. Using HTTPS requests
 
