@@ -48,7 +48,7 @@ an appropriate name for your HTTPS functionality.
 
 Then another file in the format __routes_file_name___requests.js,
 setup your routing file as a module and use it on the server as I have in server.js.
-(comments on code should help you identify how this is done.
+(comments on code should help you identify how this is done).
 
 Now in the requests file you can call these requests and return res values from them.
 To use the requests files in your HTML pages, include them as I have (example in every HTML file),
