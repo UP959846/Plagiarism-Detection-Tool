@@ -14,7 +14,7 @@ The system consists of four main technologies: Javascript, HTML, css, and SQL. N
 
 The system architecture has 3 main components: A Node.js server with Express.js framework, an SQL Database & A HTML/css front end. I have structure my application such that npm start runs server.js. 
 
-In server.js, an Express server is established on port 8080. Next I made the Express server serve static from all necessary directories: "page_source", this directory is where all HTML scripts are stored. "css_source", this directory is where all css styling (except embedded styling in HTML) is done. "media", here all images for my program and documentation are stored. "utils", this directory holds a set of .js files which are loaded into the HTML pages, these files can be seen as a 'middle-man' between the front-end and the backend, they are full of functions which make all HTTPS request calls and return values to the front-end after doing so. Lastly, "user_uploads", this is an output folder for the multer I have set up, in laymans terms, this is where a hard copy of every file uploaded to the server is stored.
+In server.js, an Express server is established on port 8080. Next I made the Express server serve static files from all necessary directories: "page_source", this directory is where all HTML scripts are stored. "css_source", this directory is where all css styling (except embedded styling in HTML) is done. "media", here all images for my program and documentation are stored. "utils", this directory holds a set of .js files which are loaded into the HTML pages, these files can be seen as a 'middle-man' between the front-end and the backend, they are full of functions which make all HTTPS request calls and return values to the front-end after doing so. Lastly, "user_uploads", this is an output folder for the multer I have set up, in laymans terms, this is where a hard copy of every file uploaded to the server is stored.
 
 Next in server.js, all my routing is done. All database calls and similarity calculations are done via HTTPS requests to the server. To clean up the server.js file I have distributed all the routes (requests) to appropriate routes and files (contained in the routes folder). To do this I wrote them as modules, required them, and assigned them to a route for each file using "expressServer.use(). 
 
@@ -24,7 +24,7 @@ Finally, I start the server on port 8080.
 
 By describing server.js, it provides an overview of how my program is structures and where things take place. The only part left out was an overview of my database. All database files are stored in the directory "sql database", there is a file for each of the databases. 
 
-1. Files database - this database is where all records all files and there information is stored. ("files.db")
+1. Files database - this database is where records of all files and their information is stored. ("files.db")
 2. Users database - this database is where all user records and their information are stored. ("user.db").
 
 In this folder along with the databases themselves is a file for each database which handles all sql CRUD API operations. These files are written as modules so I could require them in the routing files. (In my HTTPS requests).
@@ -87,7 +87,7 @@ Here you will see a comparsion centre for the files you selected. There is a gra
 
 ### Further documentation
 
-There are a few more documents in this directory to help you install, navigate and maintain this web application.
+There are a few more documents in this directory to help you install, and maintain this web application.
 
 1. Installation guide - INSTALLATION.md
 2. Maintainance and workflow guide - MAINTAINANCE.md
