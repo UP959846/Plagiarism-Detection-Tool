@@ -5,7 +5,9 @@ see as not straight-forward. This will help anyone
 who wishes to work on and continue my web application
 as well as remind me how things are working. Throughout 
 this document I may reference comments I have made 
-to help you understand. The Express server is setup to
+to help you understand. A lot of understanding of how to
+work on the application can be grasped through these comments.
+The Express server is setup to
 automatically serve files in the directories provided so
 adding new files is as simple as loading them to a URL or 
 file.
