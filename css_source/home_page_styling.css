@@ -1,0 +1,41 @@
+.hub-button {
+  width: 33%;
+  height: 150px;
+  border-radius: 12px;
+  margin-top: 0.5%;
+  text-shadow: 2px 2px #000000;
+  color: white;
+  font-size: 50px;
+}
+
+.hub-button:active {
+  background-color:rgb(83, 83, 83);
+  transform: translateY(4px);
+}
+
+.hub-button:hover {
+  border-radius: 24px;
+}
+
+.hub-button-3x-size {
+  width: 99.5%;
+  height: 150px;
+  border-radius: 12px;
+  margin-top: 0.5%;
+  font-family: Bookman, URW Bookman L, serif;
+  text-shadow: 2px 2px #000000;
+  color: white;
+  font-size: medium;
+  font-size: 50px;
+}
+
+.hub-button-3x-size:hover {
+  border-radius: 24px;
+}
+
+.hub-button-3x-size:active {
+  background-color:rgb(83, 83, 83);
+  transform: translateY(4px);
+}
+
+

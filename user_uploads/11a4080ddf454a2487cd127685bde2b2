@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html>
+    <link rel="stylesheet" href="file_center_page_styling.css">
+    <link rel="stylesheet" href="non_specific_styling.css">
+
+    <script type="text/javascript">  
+        //If logged in cookie not stored to browser
+        if (localStorage.getItem("loggedIn") == null){
+            //Redirect to log in
+            window.location.replace(window.location.origin);
+        }
+     </script> 
+     
+    <script type="text/javascript">  
+        //Back button function
+        function back(){
+            //Redirect to home
+            window.location.replace(window.location.origin + "/home");
+        }
+    </script> 
+
+    <script type="text/javascript">  
+        //View file button function
+        function viewFile(name){
+            //Store file cookie for viewing
+            localStorage.setItem("fileName", name);
+            //Redirect to view file page
+            window.location.replace(window.location.origin + "/view-file");
+        }
+    </script> 
+
+    <head>
+        <div class="banner">
+                <div>
+                    <button onclick="back()" class="back-button">BACK</button>
+                </div>
+                <div class="put-left">
+                    <h1 style="font-size: 72px">Plagiarism Detection Tool</h1>
+                </div>
+
+                <div style="font-size: 36px" class="put-left">
+                    <p class="sub-text">Catching the cheaters.</p>
+                </div>
+        </div>
+    </head>
+
+    <br/>
+    <br/>
+
+    <body>
+        <script type="text/javascript" src="files_requests.js"></script>
+        <script type="text/javascript"> 
+            //Rendering files
+            async function getFiles(){
+                //Get users email
+                const email = localStorage.getItem("loggedIn");
+                //Get list of users files from the database
+                const files = await requestFiles();
+
+                return files;
+            } 
+
+            //Used async function to ensure files are loaded before rendering
+            async function renderFiles(){
+                const files = await getFiles();
+
+                function renderFile(file, index) {
+                    //Needed to render correctly
+                    var fileNameWithQuotes = "'" + file.name + "'";
+
+                    document.getElementById("file-view-area").innerHTML 
+                    += '<button class="file-button" onclick="viewFile(' + fileNameWithQuotes + ')">' + file.storedName + '</button>';
+                }
+
+                //Render custom file button
+                files.forEach(renderFile);
+            }
+
+            renderFiles();
+
+        </script>
+
+        <div id="file-view-area" class="darkwood-div">
+
+
+        </div>
+
+        <div id="file-upload-area" class="darkwood-div">
+            <br/>
+            <br/>
+
+            <form class="upload-form" enctype="multipart/form-data">
+                <input type="file" id="file-input" multiple accept=".js, .css, .html/*" 
+                name="code-file" onchange="whenFilesUploaded(this.files)">
+
+                <p style="font-size: 50px; text-align: center;" class="heading-style">
+                    Drag and drop a files here, or use our file explorer!</p>
+
+                <br/>
+                <br/>
+                <br/>
+
+                <label class="select-file-button" for="file-input">Select some files</label>
+              </form>
+
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+        </div>
+
+        <script type="text/javascript">  
+            //Adding drag & drop functionality
+
+            //Getting area by ID
+            let fileDropArea = document.getElementById('file-upload-area');
+
+            //Adding event listeners using forEach iteration, ensuring it behaves appropriately
+            function preventDefaults(event){
+                event.preventDefault();
+                event.stopPropagation();
+            }
+
+            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(event => {
+                fileDropArea.addEventListener(event, preventDefaults, false);
+            });
+
+            //Letting user know they are dropping the file in the correct place by adding green outline
+            ['dragenter', 'dragover'].forEach(event => {
+                fileDropArea.addEventListener(event, highlightArea, false);
+            });
+
+            ['dragleave', 'drop'].forEach(event => {
+                fileDropArea.addEventListener(event, unhighlightArea, false);
+            });
+
+            function unhighlightArea(event) {
+                fileDropArea.classList.remove('highlight');
+            };
+
+            function highlightArea(event) {
+                fileDropArea.classList.add('highlight');
+            }
+
+            //Handling file uploads
+            function whenFilesUploaded(files) {
+                ([...files]).forEach(sendFile)
+            }
+
+            async function sendFile(file) {
+                await requestUpload(file);
+                //Reload page
+                window.location.replace(window.location.origin + "/file-center");
+            } 
+
+            //Adding event listener for when a file is dropped
+            fileDropArea.addEventListener('drop', fileDropped, false);
+
+            function fileDropped(event) {
+                let dataTransferEvent = event.dataTransfer;
+                let filesUploaded = dataTransferEvent.files;
+
+                whenFilesUploaded(filesUploaded);
+            }
+        </script> 
+
+    </body>
+
+</html>

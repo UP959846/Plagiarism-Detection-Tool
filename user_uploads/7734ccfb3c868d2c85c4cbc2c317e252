@@ -1,0 +1,52 @@
+#Function to convert binary to denary, all code in function reused from
+#question 1, for explaination see the code for question 1
+def BinaryToDenary(b):
+
+    b = b[::-1]
+
+    d = 0
+
+    for sub in range(0, len(b)):
+        d += (int(b[sub]))*(2**sub)
+
+    return d
+
+#This is a function to split a given string every n characters
+def splitStr(plaintext, n):
+
+    #Using a while loop with a generator to split the string using slicing
+    while plaintext:
+        yield plaintext[:n]
+        plaintext = plaintext[n:]
+
+#Requesting binary value to convert from user in type str
+ui = input("Enter binary to convert into hex: \n")
+
+#Initialising a str for the final hexadecimal output
+hexa = ""
+
+#Creating a list from the string given, split at every 4 characters using
+#splitStr() function
+binary = list(splitStr(ui, 4))
+
+#Similar to loop in question 3 although it works the other way.
+for sub in binary:
+
+    if sub == "1010":
+        hexa += "A"
+    elif sub ==  "1011":
+        hexa += "B"
+    elif sub ==  "1100":
+        hexa += "C"
+    elif sub ==  "1101":
+        hexa += "D"
+    elif sub ==  "1110":
+        hexa += "E"
+    elif sub ==  "1111":
+        hexa += "F"
+    #If 'sub' is does not correspond with a letter...
+    else:
+        hexa += str(BinaryToDenary(sub))
+
+#Outputting final result
+print ("Hexadecimal: " + hexa)

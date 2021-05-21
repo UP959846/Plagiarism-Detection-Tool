@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html>
+    <link rel="stylesheet" href="file_center_page_styling.css">
+    <link rel="stylesheet" href="non_specific_styling.css">
+
+    <script type="text/javascript">  
+        //If logged in cookie not stored to browser
+        if (localStorage.getItem("loggedIn") == null){
+            //Redirect to log in
+            window.location.replace(window.location.origin);
+        }
+     </script> 
+     
+    <script type="text/javascript">  
+        //Back button function
+        function back(){
+            //Redirect to selection method page
+            window.location.replace(window.location.origin + "/multifile-compare");
+        }
+    </script> 
+
+    <head>
+        <div class="banner">
+                <div>
+                    <button onclick="back()" class="back-button">BACK</button>
+                </div>
+                <div class="put-left">
+                    <h1 style="font-size: 72px">Plagiarism Detection Tool</h1>
+                </div>
+
+                <div style="font-size: 36px" class="put-left">
+                    <p class="sub-text">Catching the cheaters.</p>
+                </div>
+        </div>
+    </head>
+
+    <br/>
+    <br/>
+
+    <body>
+        <script type="text/javascript" src="files_requests.js"></script>
+        <div class="darkwood-div">
+            <br/>
+            <p class="heading-style" style="text-align:center; font-size: 40px">
+                Once you upload files you will be immediatlely be transferred to the comparison
+                page, so make sure you upload them all at once, all your files will stored in your file center
+                too. Loading upon upload may take a minute depending on upload size, please be patient. 
+            </p>
+            <br/>
+            <br/>
+        </div>
+
+        <div id="file-upload-area" class="darkwood-div">
+            <br/>
+            <br/>
+
+            <form class="upload-form" enctype="multipart/form-data">
+                <input type="file" id="file-input" multiple accept=".js, .css, .html/*" 
+                name="code-file" onchange="whenFilesUploaded(this.files)">
+
+                <p style="font-size: 50px; text-align: center;" class="heading-style">
+                    Drag and drop a files here, or use our file explorer!</p>
+
+                <br/>
+                <br/>
+                <br/>
+
+                <label class="select-file-button" for="file-input">Select some files</label>
+              </form>
+
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+        </div>
+
+        <script type="text/javascript">  
+            //Adding drag & drop functionality
+
+            //Getting area by ID
+            let fileDropArea = document.getElementById('file-upload-area');
+
+            //Adding event listeners using forEach iteration, ensuring it behaves appropriately
+            function preventDefaults(event){
+                event.preventDefault();
+                event.stopPropagation();
+            }
+
+            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(event => {
+                fileDropArea.addEventListener(event, preventDefaults, false);
+            });
+
+            //Letting user know they are dropping the file in the correct place by adding green outline
+            ['dragenter', 'dragover'].forEach(event => {
+                fileDropArea.addEventListener(event, highlightArea, false);
+            });
+
+            ['dragleave', 'drop'].forEach(event => { 
+                fileDropArea.addEventListener(event, unhighlightArea, false);
+            });
+
+            function unhighlightArea(event) {
+                fileDropArea.classList.remove('highlight');
+            };
+
+            function highlightArea(event) {
+                fileDropArea.classList.add('highlight');
+            }
+
+            //Handling file uploads
+            async function whenFilesUploaded(files) {
+                for (const file of [...files]) {
+                        await sendFile(file);
+                    }
+
+                //Store cookie to set comparison mode
+                localStorage.setItem("mcomp-mode", "uploadedfiles");
+
+                //Re-direct to origin file select page
+                window.location.replace(window.location.origin + "/multifile-select-origin-file");
+            }
+
+            async function sendFile(file) {
+                const newFileStoredName = await requestUpload(file);
+
+                //Store in comparison cookie
+                if (localStorage.getItem("mcomp-obj") != null){
+                    //If so get current array of comp files
+                    var filesForCompArray = JSON.parse(localStorage.getItem("mcomp-obj"));
+
+                    //Add new one
+                    filesForCompArray.push(newFileStoredName);
+                    
+                    //Store in cookies
+                    localStorage.setItem("mcomp-obj", JSON.stringify(filesForCompArray));
+                }else{
+                    //If not make new array for comp file names
+                    var filesForCompArray = new Array();
+
+                    //Add new file name
+                    filesForCompArray.push(newFileStoredName);
+
+                    //Store in cookies
+                    localStorage.setItem("mcomp-obj", JSON.stringify(filesForCompArray));
+                }
+            } 
+
+            //Adding event listener for when a file is dropped
+            fileDropArea.addEventListener('drop', fileDropped, false);
+
+            function fileDropped(event) {
+                let dataTransferEvent = event.dataTransfer;
+                let filesUploaded = dataTransferEvent.files;
+
+                whenFilesUploaded(filesUploaded);
+            }
+        </script> 
+
+    </body>
+
+</html>

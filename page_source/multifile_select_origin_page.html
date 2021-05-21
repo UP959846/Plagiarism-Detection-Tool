@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+    <link rel="stylesheet" href="file_center_page_styling.css">
+    <link rel="stylesheet" href="non_specific_styling.css">
+
+    <script type="text/javascript">  
+        //If logged in cookie not stored to browser
+        if (localStorage.getItem("loggedIn") == null){
+            //Redirect to log in
+            window.location.replace(window.location.origin);
+        }
+     </script> 
+     
+    <script type="text/javascript">  
+        //Back button function
+        function back(){
+            //Redirect to home
+            window.location.replace(window.location.origin + "/home");
+        }
+    </script> 
+
+    <script type="text/javascript">  
+        //Select file button function
+        function selectFile(name){
+            //Store file cookie for viewing
+            localStorage.setItem("originFileName", name);
+            //Redirect to multi file compare view
+            window.location.replace(window.location.origin + "/multifile-compare-view");
+        }
+    </script> 
+
+    <head>
+        <div class="banner">
+                <div>
+                    <button onclick="back()" class="back-button">BACK</button>
+                </div>
+                <div class="put-left">
+                    <h1 style="font-size: 72px">Plagiarism Detection Tool</h1>
+                </div>
+
+                <div style="font-size: 36px" class="put-left">
+                    <p class="sub-text">Catching the cheaters.</p>
+                </div>
+        </div>
+    </head>
+
+    <br/>
+    <br/>
+
+    <body>
+        <script type="text/javascript" src="files_requests.js"></script>
+        <script type="text/javascript"> 
+            //Rendering files
+            async function getFiles(){
+                const mode = localStorage.getItem("mcomp-mode");
+
+                if(mode == "6file"){
+                    //Get names of files to compare
+                    const mcomp1Name = localStorage.getItem("mcomp1");
+                    const mcomp2Name = localStorage.getItem("mcomp2");
+                    const mcomp3Name = localStorage.getItem("mcomp3");
+                    const mcomp4Name = localStorage.getItem("mcomp4");
+                    const mcomp5Name = localStorage.getItem("mcomp5");
+                    const mcomp6Name = localStorage.getItem("mcomp6");
+
+                    const arrayOfFileNames = [mcomp1Name, mcomp2Name, mcomp3Name,
+                                              mcomp4Name, mcomp5Name, mcomp6Name];
+
+                    //Get file corresponding with name and store in files array
+                    var files = new Array();
+
+                    for (const name of arrayOfFileNames) {
+                        file = await requestFile(name)
+                        files.push(file);
+                    }
+                    
+                    return files;
+                }
+                if (mode == "uploadedfiles"){
+                    //Get names of files to compare
+                    const arrayOfFileNames = await JSON.parse(localStorage.getItem("mcomp-obj"));
+
+                    //Get file corresponding with name and store in files array
+                    var files = new Array();
+                         
+                    for (const name of arrayOfFileNames) {
+                        file = await requestFile(name)
+                        files.push(file);
+                    }
+
+                    return files;
+                }
+            } 
+
+            //Used async function to ensure files are loaded before rendering
+            async function renderFiles(){
+                const files = await getFiles();
+
+                function renderFile(file, index) {
+                    //Needed to render correctly
+                    var fileNameWithQuotes = "'" + file.name + "'";
+
+                    document.getElementById("file-view-area").innerHTML 
+                    += '<button class="file-button" onclick="selectFile(' + fileNameWithQuotes + ')">' + file.storedName + '</button>';
+                }
+
+                //Render custom file button
+                files.forEach(renderFile);
+            }
+
+            renderFiles();
+
+        </script>
+
+        <br/>
+
+        <div class="darkwood-div">
+
+        <br/>
+        <h1 style="margin-left: 30px;">To make a multi-file comparison you must select an origin file,
+            an origin file is a file which all comparisons will be based off,
+            we recommend selecting the most called upon file. (e.g. App.js)
+        </h1>
+        <br/>
+
+        </div>
+
+        <br/>
+        <br/>
+        <br/>
+        <br/>
+
+        <div id="file-view-area" class="darkwood-div">
+        </div>
+
+    </body>
+
+</html>

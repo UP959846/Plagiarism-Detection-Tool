@@ -1,0 +1,56 @@
+#Creating function to require input of a denary value less than 10, and return
+#the binary equivalent in the type str
+def DenaryToBinary(den):
+
+    #All code in this function extracted and refined from the previous question
+    #For code explaination see question 2...
+    binout = ""
+
+    for sub in range(0, 4):
+            
+        binout += str(den%2)
+
+        if (den%2) == 1:
+            den = (den-1)//2
+        elif (den%2) == 0:
+            den = den//2
+
+    binout = binout[::-1]
+
+    return binout
+
+#Requesting user input of a hex value
+ui = input("Enter hex to convert to binary: \n")
+
+#Initialising binary in type str for final output value
+binary = ""
+
+#Splitting the string input by the user into individual characters by
+#splitting the srtring into a list
+hexd = list(ui)
+
+#A loop which goes through all elements in the 'hexd' list, where 'sub' in the
+#list is the current value in the list.
+for sub in hexd:
+
+    #If 'sub' is said letter, then add its binary equivalent to the final output
+    if sub == "A":
+        binary += "1010"
+    elif sub ==  "B":
+        binary += "1011"
+    elif sub ==  "C":
+        binary += "1100"
+    elif sub ==  "D":
+        binary += "1101"
+    elif sub ==  "E":
+        binary += "1110"
+    elif sub ==  "F":
+        binary += "1111"
+    #If 'sub' is an integer...
+    else:
+        #Use converter function made, add this to the final output
+        binary += DenaryToBinary(int(sub))
+
+#Outputting results
+print ("Binary: " + binary)
+

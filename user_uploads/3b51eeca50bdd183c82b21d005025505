@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+    <link rel="stylesheet" href="view_file_page_styling.css">
+    <link rel="stylesheet" href="non_specific_styling.css">
+
+    <script type="text/javascript">  
+        //If logged in cookie not stored to browser
+        if (localStorage.getItem("loggedIn") == null){
+            //Redirect to log in
+            window.location.replace(window.location.origin);
+        }
+     </script> 
+     
+    <script type="text/javascript">  
+        //Back button function
+        function back(){
+            //Redirect to file center
+            window.location.replace(window.location.origin + "/file-center");
+        }
+    </script> 
+
+    <head>
+        <div class="banner">
+                <div>
+                    <button onclick="back()" class="back-button">BACK</button>
+                </div>
+                <div class="put-left">
+                    <h1 style="font-size: 72px">Plagiarism Detection Tool</h1>
+                </div>
+
+                <div style="font-size: 36px" class="put-left">
+                    <p class="sub-text">Catching the cheaters.</p>
+                </div>
+        </div>
+    </head>
+
+    <br/>
+
+    <body>
+        <script type="text/javascript" src="files_requests.js"></script>
+
+        <div class="file-content-pane" id="file-content-pane"></div>
+
+        <script type="text/javascript"> 
+            //Rendering file contents
+
+            //Used async function to ensure file contents are loaded before rendering
+            async function renderContents(){
+                const fileContents = await requestContents("fileName");
+                fileContents.forEach(function(line, index){
+                    document.getElementById("file-content-pane").innerHTML 
+                    += "<p class='file-content-text'>"  + line + "</p>";
+                });
+            }
+
+            renderContents();
+        </script>
+
+        <script type="text/javascript"> 
+            //Delete file button function
+            async function deleteFile(){
+                requestDelete();
+
+                //Redirect to file center
+                window.location.replace(window.location.origin + "/file-center");
+            }
+        </script>
+
+        <br/>
+
+        <div style="height: 120px;" class="darkwood-div">
+            <br/>
+            <button onclick="deleteFile()" class="functional-button">DELETE FILE</button>
+            <br/>
+        </div>
+
+    </body>
+
+</html>

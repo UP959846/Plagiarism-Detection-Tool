@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html>
+    <link rel="stylesheet" href="compare_file_view_page_styling.css">
+    <link rel="stylesheet" href="non_specific_styling.css">
+
+    <script type="text/javascript">  
+        //If logged in cookie not stored to browser
+        if (localStorage.getItem("loggedIn") == null){
+            //Redirect to log in
+            window.location.replace(window.location.origin);
+        }
+     </script> 
+     
+    <script type="text/javascript">  
+        //Back button function
+        function back(){
+            //Redirect to compare file page
+            window.location.replace(window.location.origin + "/compare-files");
+        }
+    </script> 
+
+    <head>
+        <div class="banner">
+                <div>
+                    <button onclick="back()" class="back-button">BACK</button>
+                </div>
+                <div class="put-left">
+                    <h1 style="font-size: 72px">Plagiarism Detection Tool</h1>
+                </div>
+
+                <div style="font-size: 36px" class="put-left">
+                    <p class="sub-text">Catching the cheaters.</p>
+                </div>
+        </div>
+    </head>
+
+    <body>
+
+        <div style="float: left;" class="vertical-darkwood-div"> 
+            <h1 style="font-size: 50px; margin-left: 10px;">Statistics</h1>
+
+            <br/>
+            <br/>
+            <br/>
+
+            <div class="heading-style" id="similarity-display">Percentage match:&nbsp</div>
+
+            <br/>
+            <br/>
+            <br/>
+
+            <div class="heading-style" style="font-size: 24px; margin-left: 10px;" id="likelihood-display"></div>
+        </div>
+
+        <script type="text/javascript" src="similarity_requests.js"></script>
+        <script type="text/javascript" src="files_requests.js"></script>
+
+        <script type="text/javascript"> 
+        //Function to get similarity percentage
+        async function getSimilarityPercentageOfFiles(){
+            const contentFile1 = await requestContentsFull("comp1");
+            const contentFile2 = await requestContentsFull("comp2");
+
+            const similarityPercentage = await requestSimilarity(contentFile1, contentFile2);
+
+            return similarityPercentage;
+        }
+
+        //Function determining if work is likely plagiarised
+        async function isItPlagiarised(percentage){
+            if (percentage > 40.0){
+                return true;
+            }else{
+                return false;
+            }
+        }
+
+        //Function to render similarity stats
+        async function renderSimilarityStats(){
+            //Get similarity percentage
+            const percentageMatch = await getSimilarityPercentageOfFiles();
+
+            //Decide if work is likely plagiarised
+            const plagiarised = await isItPlagiarised(percentageMatch);
+
+            //Render similarity percentage 
+            document.getElementById("similarity-display").innerHTML 
+            += percentageMatch + "%&nbsp(2 D.P)";
+
+            //Render if work is likely plagiarsed and re-color elements accordingly
+            if (plagiarised){
+                document.getElementById("likelihood-display").innerHTML 
+                += ("One of these files are likely plagiarised (similarity > 40%),&nbsp"
+                + "typically work with over a 25% match is considered plagiarised,&nbsp"
+                + "however,&nbspcode uses a lot of similar instructions and therefore the"
+                + " percentage has been increased.");
+
+                document.getElementById("similarity-display").setAttribute("style","color: red; font-size: 26px; margin-left: 10px;");
+            }else{
+                document.getElementById("likelihood-display").innerHTML 
+                += ("Files are very different and display very low similarity,&nbsp"
+                + "both are likely not to be plagiarised from one another.");
+
+                document.getElementById("similarity-display").setAttribute("style","color: green; font-size: 26px; margin-left: 10px;");
+            }
+        }
+
+        renderSimilarityStats();
+
+        </script>
+
+        <div>
+            <div class="file-content-pane" id="file-content-pane2"></div>
+            <div class="file-content-pane" id="file-content-pane"></div>
+        </div>
+
+        <script type="text/javascript"> 
+            //Rendering file contents
+
+            //Used async function to ensure file contents are loaded before rendering
+            async function renderContents(){
+                //Rendering file 1
+                const fileContents = await requestContents("comp1");
+
+                //Get name of file 1
+                const selectedFile1 = await requestFile(await localStorage.getItem("comp1"));
+                const fileName1 = selectedFile1.storedName;
+
+                document.getElementById("file-content-pane").innerHTML 
+                    += "<h1 style='font-size: 40px; text-decoration: underline;'>" + fileName1 + "</h1>";
+
+                fileContents.forEach(function(line, index){
+                    document.getElementById("file-content-pane").innerHTML 
+                    += "<p class='file-content-text'>"  + line + "</p>";
+                });
+
+                //Rendering file 2
+                const fileContents2 = await requestContents("comp2");
+
+                //Get name of file 2
+                const selectedFile2 = await requestFile(await localStorage.getItem("comp2"));
+                const fileName2 = selectedFile2.storedName;
+
+                document.getElementById("file-content-pane2").innerHTML 
+                    += "<h1 style='font-size: 40px; text-decoration: underline;'>" + fileName2 + "</h1>";
+
+                fileContents2.forEach(function(line, index){
+                    document.getElementById("file-content-pane2").innerHTML 
+                    += "<p class='file-content-text'>"  + line + "</p>";
+                });
+            }
+
+            renderContents();
+        </script>
+
+    </body>
+
+</html>

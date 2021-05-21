@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+    <link rel="stylesheet" href="compare_files_page_styling.css">
+    <link rel="stylesheet" href="non_specific_styling.css">
+
+    <script type="text/javascript">  
+        //If logged in cookie not stored to browser
+        if (localStorage.getItem("loggedIn") == null){
+            //Redirect to log in
+            window.location.replace(window.location.origin);
+        }
+     </script> 
+     
+    <script type="text/javascript">  
+        //Back button function
+        function back(){
+            //Redirect to home
+            window.location.replace(window.location.origin + "/home");
+        }
+    </script> 
+
+    <script type="text/javascript">  
+    //Select from file center button function
+    async function selectFromFileCenter(){
+        //Go to selection page
+        window.location.replace(window.location.origin + "/multifile-compare-file-center");
+    }
+    //Upload files button function
+    async function uploadFiles(){
+        //Go to upload page
+        window.location.replace(window.location.origin + "/multifile-compare-upload");
+    }
+
+    </script> 
+
+    <head>
+        <div class="banner">
+                <div>
+                    <button onclick="back()" class="back-button">BACK</button>
+                </div>
+                <div class="put-left">
+                    <h1 style="font-size: 72px">Plagiarism Detection Tool</h1>
+                </div>
+
+                <div style="font-size: 36px" class="put-left">
+                    <p class="sub-text">Catching the cheaters.</p>
+                </div>
+        </div>
+    </head>
+
+    <br/>
+    <br/>
+
+    <body>
+        <h1 class="put-centre" style="font-size: 50px">How would you like the select files?</h1>
+
+        <br/>
+        <br/>
+        <br/>
+
+        <div class="darkwood-div" style="height: 300px;">
+            <button class="selection-button" style="margin-left: 235px; height: 250px; width: 500px; float: none;"
+            onclick="selectFromFileCenter()">SELECT FROM FILE CENTER (6 FILES)</button>
+            <button class="selection-button" style="height: 250px; width: 500px; float: none;"
+            onclick="uploadFiles()">UPLOAD FILES FROM LOCAL PC (MAX 71 FILES)</button>
+        </div>
+
+    </body>
+
+</html>

@@ -1,0 +1,18 @@
+import {
+    getFromStorage,
+  } from './storage';
+
+export default function checkLogin(){
+    let tokenStored = false
+    let token = getFromStorage("x-auth-token");
+    
+    if (token == null){
+        return token;
+    }else{
+        tokenStored = true;
+        
+        return token;
+    }
+}
+
+

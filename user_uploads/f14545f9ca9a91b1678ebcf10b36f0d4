@@ -1,0 +1,26 @@
+#Requesting value to be converted
+denary = int(input("Enter denary value for conversion: \n"))
+#Initialising binary variable as type str
+binary = ""
+
+#Creating for loop capable of producing 8 bit binary from a given denary value
+for sub in range(0, 8):
+
+        #Calculating remainder when divided by 2 and adding to the binary str
+        binary += str(denary%2)
+
+        #If the value is odd...
+        if (denary%2) == 1:
+                #Subtract 1, divide by 2
+                denary = (denary-1)//2
+        #If the value is even...
+        elif (denary%2) == 0:
+                #Divide by 2
+                denary = denary//2
+
+#Reversing calculated binary str
+binary = binary[::-1]
+
+#Outputting final result
+print("Binary = " + binary)
+

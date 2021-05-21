@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html>
+    <link rel="stylesheet" href="multifile_compare_view_page_styling.css">
+    <link rel="stylesheet" href="non_specific_styling.css">
+
+    <script type="text/javascript">  
+        //If logged in cookie not stored to browser
+        if (localStorage.getItem("loggedIn") == null){
+            //Redirect to log in
+            window.location.replace(window.location.origin);
+        }
+     </script> 
+     
+    <script type="text/javascript">  
+        //Back button function
+        function back(){
+            //Redirect to home
+            window.location.replace(window.location.origin + "/home");
+        }
+    </script> 
+
+    <head>
+        <div class="banner">
+                <div>
+                    <button onclick="back()" class="back-button">BACK</button>
+                </div>
+                <div class="put-left">
+                    <h1 style="font-size: 72px">Plagiarism Detection Tool</h1>
+                </div>
+
+                <div style="font-size: 36px" class="put-left">
+                    <p class="sub-text">Catching the cheaters.</p>
+                </div>
+        </div>
+    </head>
+
+    <script type="text/javascript" src="similarity_requests.js"></script>
+    <script type="text/javascript">  
+        async function getSimilarity(fileObjectsArray){
+            const arrayOfComparisonObjects = await requestMultiFileSimilarity(fileObjectsArray);
+
+            return arrayOfComparisonObjects;
+        }
+    </script> 
+
+    <body>
+
+        <div class="file-view-pane">
+            <h1 style="font-size: 36px; margin-left: 4px;">Files in comparsion</h1>
+
+            <br/>
+
+            <div id="file-list"></div>
+        </div>
+
+        <script type="text/javascript" src="files_requests.js"></script>
+        <script type="text/javascript"> 
+            //Rendering files
+            async function getFiles(){
+                const mode = localStorage.getItem("mcomp-mode");
+
+                if(mode == "6file"){
+                    //Get names of files to compare
+                    const mcomp1Name = localStorage.getItem("mcomp1");
+                    const mcomp2Name = localStorage.getItem("mcomp2");
+                    const mcomp3Name = localStorage.getItem("mcomp3");
+                    const mcomp4Name = localStorage.getItem("mcomp4");
+                    const mcomp5Name = localStorage.getItem("mcomp5");
+                    const mcomp6Name = localStorage.getItem("mcomp6");
+
+                    const arrayOfFileNames = [mcomp1Name, mcomp2Name, mcomp3Name,
+                                              mcomp4Name, mcomp5Name, mcomp6Name];
+
+                    //Get file corresponding with name and store in files array
+                    var files = new Array();
+
+                    for (const name of arrayOfFileNames) {
+                        file = await requestFile(name)
+                        files.push(file);
+                    }
+                    
+                    return files;
+                }
+                if (mode == "uploadedfiles"){
+                    //Get names of files to compare
+                    const arrayOfFileNames = await JSON.parse(localStorage.getItem("mcomp-obj"));
+
+                    //Get file corresponding with name and store in files array
+                    var files = new Array();
+                         
+                    for (const name of arrayOfFileNames) {
+                        file = await requestFile(name)
+                        files.push(file);
+                    }
+
+                    return files;
+                }
+            } 
+
+            //Used async function to ensure files are loaded before rendering
+            async function renderFiles(){
+                const files = await getFiles();
+
+                function renderFile(file, index){
+                    document.getElementById("file-list").innerHTML 
+                    += '<div class="file-list-item">' + file.storedName + '</div>';
+                }
+
+                //Render custom file button
+                files.forEach(renderFile);
+            }
+            renderFiles();
+
+        </script>
+
+        <canvas id="similarity-diagram" width="650" height="550">
+
+            <script type="text/javascript">
+                var similarityDiagram = document.getElementById("similarity-diagram");
+
+                //Functions needed for diagram generation
+                function drawConnector(context, x1, y1, x2, y2){
+                    context.beginPath();    
+                    context.moveTo(x1, y1);   
+                    context.lineTo(x2, y2); 
+                    context.stroke(); 
+                }
+
+                function drawFile(context, fileObjectWithStats, index){
+                    //Drawing a circle
+                    const pointOnDiagram = new Path2D();
+                    pointOnDiagram.arc(fileObjectWithStats.x, fileObjectWithStats.y, 24, 0, 2 * Math.PI);
+
+                    //Deciding colour dynamically based on percentage match to origin or to next item
+                    if (fileObjectWithStats.matchToOrigin >= 40){
+                        context.fillStyle = 'red';
+                    }else if (fileObjectWithStats.matchToOrigin < 40){
+                        context.fillStyle = 'green';
+                    }
+                    if (fileObjectWithStats.matchToClosestMatch >= 40){
+                            context.fillStyle = 'red';
+                    }
+
+                    context.fill(pointOnDiagram);
+
+                    //Label each circle
+                    context.fillStyle = 'black';  
+                    context.strokeStyle = "black";
+                    context.font = "20px Georgia";  
+                    context.fillText(index, fileObjectWithStats.x - 6, fileObjectWithStats.y);
+
+                    // Listen for mouse clicks on the diagram
+                    similarityDiagram.addEventListener('mousedown', handleClick);
+
+                    //When user clicks a digrams point
+                    function handleClick(event){
+                        // If mouse on point
+                        if (context.isPointInPath(pointOnDiagram, event.offsetX, event.offsetY)) {
+                            //Create stats text
+                            const stats = "File name: " + fileObjectWithStats.name
+                            + "<br/>Percentage match to origin file: " + fileObjectWithStats.matchToOrigin
+                            + "%<br/>Percentage match to prior file in diagram: " + fileObjectWithStats.matchToClosestMatch
+                            + "%";
+
+                            document.getElementById("file-stats-bar").innerHTML
+                            =  stats;
+                        }
+                    }
+                }
+
+
+                //Generate diagram function
+                async function generateSimilarityDiagram(){
+                    //Get context for drawing
+                    var context = similarityDiagram.getContext("2d");
+
+                    //Get files being compared
+                    const files = await getFiles();
+
+                    //Prepare files for rendering:
+                    //Package them into an array with their name, similarity to origin to and similarity to next closest
+                    //to the origin file, and generate appropriate x and y coordinates for them.
+
+                    var arrayOfTextsAndNames = new Array();
+
+                    //For each file make object ready to order and compare
+                    for (const file of files) {
+                        var textAndName = {
+                            name: file.storedName,
+                            text: await requestContentsFullFromName(file.name)
+                        }
+                        
+                        arrayOfTextsAndNames.push(textAndName);
+                    }
+
+                    //Get similarity and order
+                    const arrayOfComparisonObjects = await requestMultiFileSimilarity(arrayOfTextsAndNames);
+
+                    var fileStatsArrayWithCoords = new Array();
+
+                    //For each file generate x and y pos for graph and store in new object
+                    //x and y for each object represent mid points
+                    var y_increment = 100;
+                    var x_increment = 0;
+
+                    for (const [index, comparisonObject] of arrayOfComparisonObjects.entries()) {
+                        var fileStatsWithCoords = {
+                            name: comparisonObject.name,
+                            matchToOrigin: comparisonObject.matchToOrigin,
+                            matchToClosestMatch: comparisonObject.matchToClosestMatch,
+                            x: undefined,
+                            y: undefined
+                        }
+
+                        //Dealing with origin object
+                        if (index == 0){
+                            fileStatsWithCoords.x = 25;
+                            fileStatsWithCoords.y = 25;
+                            //Push new object with coordinates to array
+                            fileStatsArrayWithCoords.push(fileStatsWithCoords);
+                            continue;
+                        }
+
+                        //Handling first turn
+                        if((index == 6) || (index == 17) || (index == 28)){
+                            y_increment = -50;
+                            x_increment = 50;
+                        }
+                        if((index == 7) || (index == 18) || (index == 29)){
+                            y_increment = -100;
+                            x_increment = 0;
+                        }
+
+                        //Handling second turn
+                        if((index == 11) || (index == 22)){
+                            y_increment = -50;
+                            x_increment = 50;
+                        }
+                        if((index == 12) || (index == 23)){
+                            y_increment = 100;
+                            x_increment = 0;
+                        }
+
+                        //Assign coordinate based on increment values and last files coordinates and alogorithm mapping rules
+                        fileStatsWithCoords.x = fileStatsArrayWithCoords[index - 1].x + x_increment;
+                        fileStatsWithCoords.y = fileStatsArrayWithCoords[index - 1].y + y_increment;
+
+
+                        //Push new object with coordinates to array
+                        fileStatsArrayWithCoords.push(fileStatsWithCoords);
+                    }
+                    
+                    //Generate diagram based on files selected
+                    fileStatsArrayWithCoords.forEach(function(fileObjectWithStats, index){
+                        //Don't draw connector off last file
+                        if (index != (fileStatsArrayWithCoords.length - 1)){
+                            drawConnector(context, fileObjectWithStats.x, fileObjectWithStats.y, 
+                            fileStatsArrayWithCoords[index + 1].x, fileStatsArrayWithCoords[index + 1].y);
+                        }
+                        drawFile(context, fileObjectWithStats, index);
+                    });
+                }
+                
+                generateSimilarityDiagram();
+
+            </script>
+
+        </canvas>
+
+        <div id="file-stats-bar" class="file-stats-bar">
+            Click on a point in the diagram to see it's stats here.
+        </div>
+
+    </body>
+
+</html>

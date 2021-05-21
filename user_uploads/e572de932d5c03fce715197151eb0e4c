@@ -1,0 +1,17 @@
+const mongooseModule = require('mongoose');
+const blueprint = mongooseModule.Schema;
+
+const foodBP = new blueprint({
+  
+  foodItems: [{ 
+    ingredientName: String, 
+    expiryDate: Date,
+    foodType: String,
+  }],
+});
+
+
+const food = mongooseModule.model('foods', foodBP);
+
+//exporting new blueprint
+module.exports = food;
