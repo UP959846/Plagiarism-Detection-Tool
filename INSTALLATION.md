@@ -13,7 +13,7 @@ Once you have the requirements installed you can run the program by:
 
 2. Open terminal in Visual Studio Code
 
-![Terminal](media/terminal_shot.png)
+![Terminal](media/terminal_shot.PNG)
 
 3. Run the command: cd "/__directory_web_application_stored_in"
 
@@ -21,6 +21,6 @@ Once you have the requirements installed you can run the program by:
 
 5. Open browser and visit: http://localhost:8080/
 
-![Start screen](media/start_screen.png)
+![Start screen](media/start_screen.PNG)
 
 6. Enjoy my Plagiarism Detection Web Application!

@@ -39,16 +39,16 @@ NOTE: The web app functions optimally on **Chrome browser at zoom-view 90%**, I 
 
 These are the pages which will greet you first when you open the app, here you can sign up and log in.
 
-![Start screen](media/start_screen.png)
+![Start screen](media/start_screen.PNG)
 
 
-![Sign up screen](media/sign_up.png)
+![Sign up screen](media/sign_up.PNG)
 
 #### Home Screen
 
 This screen is the hub of the web application.
 
-![Home screen](media/hub.png)
+![Home screen](media/hub.PNG)
 
 ##### File Center
 
@@ -56,33 +56,33 @@ The file center is where files can be **uploaded and deleted** from the app for 
 
 **NOTE: Uploading non-code file extensions will not work.**
 
-![File Center](media/file_center.png)
+![File Center](media/file_center.PNG)
 
 #### Compare file pairs
 
 The compare file pair pages are used to compare 2 files, view them side by side, and output a report based on the outcome. First you select 2 files, then you click the compare button to get the report and view the files.
 
-![Compare page 1](media/comp1.png)
+![Compare page 1](media/comp1.PNG)
 
-![Compare page 2](media/comp2.png)
+![Compare page 2](media/comp2.PNG)
 
 #### Multi-file compare
 
 First you must choose how you want to select the files to compare.
 
-![MCompare1](media/mcomp1.png)
+![MCompare1](media/mcomp1.PNG)
 
 Secondly, you must upload or select the files you want to compare graphically.
 
-![MCompare2](media/mcomp2.png)
+![MCompare2](media/mcomp2.PNG)
 
 Next you must choose an **origin file**,  an origin file is the base file all comparisons are made around, there is more information given about this throughout these pages.
 
-![MCompare3](media/mcomp3.png)
+![MCompare3](media/mcomp3.PNG)
 
 Here you will see a comparsion centre for the files you selected. There is a graph which **starts at the origin file**, every file is in order of similarity away from the origin file. **File information can be expanded** by **clicking a node** on the diagram. You can also see a list of the files you are comparing here.
 
-![MCompare4](media/mcomp4.png)
+![MCompare4](media/mcomp4.PNG)
 
 
 ### Further documentation
